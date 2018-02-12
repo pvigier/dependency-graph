@@ -37,7 +37,7 @@ def find_neighbors(path):
 	code = f.read()
 	return [normalize(include) for include in include_regex.findall(code)]
 
-def create_graph(folder):
+def create_graph(folder, create_cluster):
 	""" Create a graph from a folder. """
 	# Find nodes and clusters
 	files = find_all_files(folder)
@@ -50,15 +50,16 @@ def create_graph(folder):
 	# Find edges and create clusters
 	for folder in folder_to_files:
 		with graph.subgraph(name='cluster_{}'.format(folder)) as cluster:
-			cluster_edges = []
 			for path in folder_to_files[folder]:
 				node = normalize(path)
-				cluster.node(node)
+				if create_cluster:
+					cluster.node(node)
+				else:
+					graph.node(node)
 				neighbors = find_neighbors(path)
 				for neighbor in neighbors:
 					if neighbor != node and neighbor in nodes:
 						graph.edge(node, neighbor)
-			cluster.edges(cluster_edges)
 	return graph
 
 if __name__ == '__main__':
@@ -68,7 +69,8 @@ if __name__ == '__main__':
 	parser.add_argument('-f', '--format', help='Format of the output', default='pdf', \
 		choices=['bmp', 'gif', 'jpg', 'png', 'pdf', 'svg'])
 	parser.add_argument('-v', '--view', action='store_true', help='View the graph')
+	parser.add_argument('-c', '--cluster', action='store_true', help='Create a cluster for each subfolder')
 	args = parser.parse_args()
-	graph = create_graph(args.folder)
+	graph = create_graph(args.folder, args.cluster)
 	graph.format = args.format
 	graph.render(args.output, cleanup=True, view=args.view)
