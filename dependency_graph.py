@@ -1,6 +1,7 @@
 import os
 import re
 import argparse
+from collections import defaultdict
 from graphviz import Digraph
 
 include_regex = re.compile('#include\s+["<"](.*)[">]')
@@ -24,22 +25,32 @@ def find_all_files(path, recursive=True):
 			files.append(entry.path)
 	return files
 
+def find_neighbors(path):
+	f = open(path)
+	code = f.read()
+	return [normalize(include) for include in include_regex.findall(code)]
+
 def create_graph(folder):
+	# Find nodes and clusters
 	files = find_all_files(folder)
+	folder_to_files = defaultdict(list)
+	for path in files:
+		folder_to_files[os.path.dirname(path)].append(path)
+	nodes = {normalize(path) for path in files}
 	# Create graph
 	graph = Digraph()
-	# Add nodes
-	nodes = [normalize(path) for path in files]
-	for node in nodes:
-		graph.node(node)
-	# Add edges
-	for path, node in zip(files, nodes):
-		f = open(path)
-		code = f.read()
-		for include in include_regex.findall(code):
-			neighbor = normalize(include)
-			if neighbor != node and neighbor in nodes:
-				graph.edge(node, neighbor)
+	# Find edges and create clusters
+	for folder in folder_to_files:
+		with graph.subgraph(name='cluster_{}'.format(folder)) as cluster:
+			cluster_edges = []
+			for path in folder_to_files[folder]:
+				node = normalize(path)
+				cluster.node(node)
+				neighbors = find_neighbors(path)
+				for neighbor in neighbors:
+					if neighbor != node and neighbor in nodes:
+						graph.edge(node, neighbor)
+			cluster.edges(cluster_edges)
 	return graph
 
 if __name__ == '__main__':
