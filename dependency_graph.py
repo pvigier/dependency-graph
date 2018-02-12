@@ -8,15 +8,21 @@ include_regex = re.compile('#include\s+["<"](.*)[">]')
 valid_extensions = ['.cpp', '.h']
 
 def normalize(path):
+	""" Return the name of the node that will represent the file at path. """
 	filename = os.path.basename(path)
 	end = filename.rfind('.')
 	end = end if end != -1 else len(filename)
 	return filename[:end]
 
 def get_extension(path):
+	""" Return the extension of the file targeted by path. """
 	return path[path.rfind('.'):]
 
 def find_all_files(path, recursive=True):
+	""" 
+	Return a list of all the files in the folder.
+	If recursive is True, the function will search recursively.
+	"""
 	files = []
 	for entry in os.scandir(path):
 		if entry.is_dir() and recursive:
@@ -26,11 +32,13 @@ def find_all_files(path, recursive=True):
 	return files
 
 def find_neighbors(path):
+	""" Find all the other nodes included by the file targeted by path. """
 	f = open(path)
 	code = f.read()
 	return [normalize(include) for include in include_regex.findall(code)]
 
 def create_graph(folder):
+	""" Create a graph from a folder. """
 	# Find nodes and clusters
 	files = find_all_files(folder)
 	folder_to_files = defaultdict(list)
