@@ -4,6 +4,17 @@ A python script to show the "include" dependency of C++ classes.
 
 It is useful to check the presence of circular dependencies.
 
+## Installation
+
+The script depends on [Graphviz](https://www.graphviz.org/) to draw the graph. 
+
+On Ubuntu, you can install the dependencies with these two commands:
+
+```
+sudo apt install graphviz
+pip3 install -r requirements.txt
+```
+
 ## Manual
 
 ```
