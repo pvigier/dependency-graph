@@ -5,7 +5,7 @@ from collections import defaultdict
 from graphviz import Digraph
 
 include_regex = re.compile('#include\s+["<"](.*)[">]')
-valid_extensions = ['.cpp', '.h']
+valid_extensions = ['.c', '.cc', '.cpp', '.h', '.hpp']
 
 def normalize(path):
 	""" Return the name of the node that will represent the file at path. """
