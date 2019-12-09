@@ -1,6 +1,7 @@
 import os
 import re
 import argparse
+import codecs
 from collections import defaultdict
 from graphviz import Digraph
 
@@ -33,8 +34,9 @@ def find_all_files(path, recursive=True):
 
 def find_neighbors(path):
 	""" Find all the other nodes included by the file targeted by path. """
-	f = open(path)
+	f = codecs.open(path, 'r', "utf-8", "ignore")
 	code = f.read()
+	f.close()
 	return [normalize(include) for include in include_regex.findall(code)]
 
 def create_graph(folder, create_cluster):
