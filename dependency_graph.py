@@ -6,7 +6,9 @@ from collections import defaultdict
 from graphviz import Digraph
 
 include_regex = re.compile('#include\s+["<"](.*)[">]')
-valid_extensions = ['.c', '.cc', '.cpp', '.h', '.hpp']
+valid_headers = [['.h', '.hpp'], 'red']
+valid_sources = [['.c', '.cc', '.cpp'], 'blue']
+valid_extensions = valid_headers[0] + valid_sources[0]
 
 def normalize(path):
 	""" Return the name of the node that will represent the file at path. """
@@ -53,7 +55,13 @@ def create_graph(folder, create_cluster, strict):
 	for folder in folder_to_files:
 		with graph.subgraph(name='cluster_{}'.format(folder)) as cluster:
 			for path in folder_to_files[folder]:
+				color = 'black'
 				node = normalize(path)
+				ext = get_extension(path)
+				if ext in valid_headers[0]:
+					color = valid_headers[1]
+				if ext in valid_sources[0]:
+					color = valid_sources[1]
 				if create_cluster:
 					cluster.node(node)
 				else:
@@ -61,7 +69,7 @@ def create_graph(folder, create_cluster, strict):
 				neighbors = find_neighbors(path)
 				for neighbor in neighbors:
 					if neighbor != node and neighbor in nodes:
-						graph.edge(node, neighbor)
+						graph.edge(node, neighbor, color=color)
 	return graph
 
 if __name__ == '__main__':
