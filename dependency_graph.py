@@ -41,7 +41,7 @@ def find_neighbors(path):
 	f.close()
 	return [normalize(include) for include in include_regex.findall(code)]
 
-def create_graph(folder, create_cluster, strict):
+def create_graph(folder, create_cluster, label_cluster, strict):
 	""" Create a graph from a folder. """
 	# Find nodes and clusters
 	files = find_all_files(folder)
@@ -70,6 +70,8 @@ def create_graph(folder, create_cluster, strict):
 				for neighbor in neighbors:
 					if neighbor != node and neighbor in nodes:
 						graph.edge(node, neighbor, color=color)
+			if create_cluster and label_cluster:
+				cluster.attr(label=folder)
 	return graph
 
 if __name__ == '__main__':
@@ -80,8 +82,9 @@ if __name__ == '__main__':
 		choices=['bmp', 'gif', 'jpg', 'png', 'pdf', 'svg'])
 	parser.add_argument('-v', '--view', action='store_true', help='View the graph')
 	parser.add_argument('-c', '--cluster', action='store_true', help='Create a cluster for each subfolder')
+	parser.add_argument('--cluster-labels', dest='cluster_labels', action='store_true', help='Label subfolder clusters')
 	parser.add_argument('-s', '--strict', action='store_true', help='Rendering should merge multi-edges', default=False)
 	args = parser.parse_args()
-	graph = create_graph(args.folder, args.cluster, args.strict)
+	graph = create_graph(args.folder, args.cluster, args.cluster_labels, args.strict)
 	graph.format = args.format
 	graph.render(args.output, cleanup=True, view=args.view)
