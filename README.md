@@ -6,20 +6,33 @@ It is useful to check the presence of circular dependencies.
 
 ## Installation
 
-The script depends on [Graphviz](https://www.graphviz.org/) to draw the graph. 
+The script depends on [Graphviz](https://www.graphviz.org/) to draw the graph.
 
-On Ubuntu, you can install the dependencies with these two commands:
+On Ubuntu, you can install it with:
 
 ```
 sudo apt install graphviz
-pip3 install -r requirements.txt
+```
+
+Then, install the script and run it with:
+
+```
+pip install git+https://github.com/pvigier/dependency-graph
+cpp_dependency_graph
+```
+
+Or, if you want to run it without installing:
+
+```
+pip install -r requirements.txt
+python3 -m cpp_dependency_graph
 ```
 
 ## Manual
 
 ```
-usage: dependency_graph.py [-h] [-f {bmp,gif,jpg,png,pdf,svg}] [-v] [-c]
-                           folder output
+usage: cpp_dependency_graph [-h] [-f {bmp,gif,jpg,png,pdf,svg}] [-v] [-c]
+                            folder output
 
 positional arguments:
   folder                Path to the folder to scan
