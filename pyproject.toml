@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cpp_dependency_graph"
+version = "1.0.0"
+dependencies = [
+    "graphviz",
+]
+
+[project.scripts]
+cpp_dependency_graph = "cpp_dependency_graph.main:main"
