@@ -14,7 +14,7 @@ On Ubuntu, you can install it with:
 sudo apt install graphviz
 ```
 
-Then, install the script with and run it with:
+Then, install the script and run it with:
 
 ```
 pip install git+https://github.com/pvigier/dependency-graph
